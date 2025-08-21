@@ -71,13 +71,13 @@ class CodeWriteCodeCheck():
     
     def start_dialog(self):
         print('Генерирую конесколько классов и в них по 3-5 методов')
-        promt = "создай несколько классов и в них по 3-5 методов на Python. классы должны быть связаны между собой и иметь некую полезную работу. код должен иметь метод main. Нужен только, код без объяснений"
+        promt = "создай несколько классов и в них по 3-5 методов на Python. классы должны быть связаны между собой и иметь некую полезную работу. Нужен только, код без объяснений"
         result = self.ai.get_llm_response(promt)
         code = re.sub(r'^```python\s*|\s*```$', '', result.message.content, flags=re.MULTILINE)
-        with open("code.py", "w") as file:
+        with open("code_from_test.py", "w") as file:
             file.write(code)
         print('Формирую тесты для полученного кода')
-        promt = 'покрой ее тестированием. не забудь импорты от классов кода который будет проверятся! код находится в файле (code.py) Убедись что все импорты правильно указаны!'
+        promt = 'напиши unit тесты к коду c использованием unittest. не забудь импорты от классов кода который будет проверятся! код находится в файле (code_from_test.py) Убедись что все импорты правильно указаны!'
         result = self.ai.get_llm_response(promt)
         test_code = re.sub(r'^```python\s*|\s*```$', '', result.message.content, flags=re.MULTILINE)
         print('Получил тесты, записываю в файл')
