@@ -71,13 +71,19 @@ class CodeWriteCodeCheck():
     
     def start_dialog(self):
         print('Генерирую конесколько классов и в них по 3-5 методов')
-        promt = "создай несколько классов и в них по 3-5 методов на Python. классы должны быть связаны между собой и иметь некую полезную работу. Нужен только, код без объяснений"
+        promt = "создай несколько классов и в них по 3-5 методов на Python. классы должны быть связаны между собой и иметь некую полезную работу. Нужен только, код без объяснений!!!!"
         result = self.ai.get_llm_response(promt)
+        self.ai.add_to_context("assistant", result.message.content)
         code = re.sub(r'^```python\s*|\s*```$', '', result.message.content, flags=re.MULTILINE)
         with open("code_from_test.py", "w") as file:
             file.write(code)
         print('Формирую тесты для полученного кода')
-        promt = 'напиши unit тесты к коду c использованием unittest. не забудь импорты от классов кода который будет проверятся! код находится в файле (code_from_test.py) Убедись что все импорты правильно указаны!'
+        promt = '''
+        1. напиши unit тесты к коду c использованием unittest. 
+        2. не забудь импорты от классов кода который будет проверятся! 
+        3. сделай импорт code_from_test и всех классов
+        4. НЕ вставлях исходный код классов которые необходимо проверить
+        5. Убедись что все импорты правильно указаны!'''
         result = self.ai.get_llm_response(promt)
         test_code = re.sub(r'^```python\s*|\s*```$', '', result.message.content, flags=re.MULTILINE)
         print('Получил тесты, записываю в файл')
@@ -125,7 +131,7 @@ def main():
     if os.path.exists('.env'):
         load_dotenv('.env')
     dialog = CodeWriteCodeCheck()
-    print(dialog.start_dialog())
+    print(dialog.start_dialog(), end='\n')
 
 if __name__ == "__main__":
     main()
