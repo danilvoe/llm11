@@ -75,6 +75,8 @@ class CodeWriteCodeCheck():
         result = self.ai.get_llm_response(promt)
         self.ai.add_to_context("assistant", result.message.content)
         code = re.sub(r'^```python\s*|\s*```$', '', result.message.content, flags=re.MULTILINE)
+        code = re.sub(r'^\s*```python\s*|\s*```\s*$', '', code, flags=re.MULTILINE)
+        os.remove("code_from_test.py")
         with open("code_from_test.py", "w") as file:
             file.write(code)
         print('Формирую тесты для полученного кода')
@@ -86,7 +88,9 @@ class CodeWriteCodeCheck():
         5. Убедись что все импорты правильно указаны!'''
         result = self.ai.get_llm_response(promt)
         test_code = re.sub(r'^```python\s*|\s*```$', '', result.message.content, flags=re.MULTILINE)
+        test_code = re.sub(r'^\s*```python\s*|\s*```\s*$', '', test_code, flags=re.MULTILINE)
         print('Получил тесты, записываю в файл')
+        os.remove("test_code.py")
         with open("test_code.py", "w") as file:
             file.write(test_code)
         print('Запускаю тесты')
